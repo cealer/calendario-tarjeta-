@@ -3,76 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calendario de Tarjeta</title>
+  <title>Mis Tarjetas</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>💳 Calendario de Tarjeta</h1>
-    <p class="subtitle">Controla tus fechas de corte y pago</p>
+    <h1>💳 Mis Tarjetas</h1>
+    <p class="subtitle">Seguimiento de movimientos, cortes y pagos</p>
   </header>
 
+  <!-- Selector de tarjeta activa -->
+  <div class="card-pills" id="card-pills"></div>
+
+  <!-- Pestañas -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="resumen">Resumen</button>
+    <button class="tab" data-tab="movimientos">Movimientos</button>
+    <button class="tab" data-tab="calendario">Calendario</button>
+    <button class="tab" data-tab="tarjetas">Tarjetas</button>
+  </nav>
+
   <main class="container">
-    <!-- Configuración de la tarjeta -->
-    <section class="card config" aria-label="Configuración de la tarjeta">
-      <h2>Configuración</h2>
-      <form id="config-form" class="config-form">
-        <div class="field">
-          <label for="card-name">Nombre de la tarjeta</label>
-          <input type="text" id="card-name" placeholder="Ej. Visa Banco X" maxlength="40" />
-        </div>
-        <div class="field">
-          <label for="corte-day">Día de corte</label>
-          <input type="number" id="corte-day" min="1" max="31" placeholder="Ej. 15" required />
-        </div>
-        <div class="field">
-          <label for="pago-day">Día límite de pago</label>
-          <input type="number" id="pago-day" min="1" max="31" placeholder="Ej. 5" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-      </form>
+
+    <!-- ============ RESUMEN ============ -->
+    <section class="tab-panel active" id="tab-resumen">
+      <div id="resumen-empty" class="empty-state">
+        <p>Aún no tienes tarjetas. Crea una en la pestaña <strong>Tarjetas</strong>.</p>
+        <button class="btn btn-primary" data-goto="tarjetas">Crear tarjeta</button>
+      </div>
+
+      <div id="resumen-content" hidden>
+        <!-- Saldo / límite -->
+        <section class="card">
+          <h2 id="resumen-card-name">—</h2>
+          <div class="balance-grid">
+            <div class="balance-item">
+              <span class="balance-label">Crédito utilizado</span>
+              <span class="balance-value" id="bal-used">$0.00</span>
+            </div>
+            <div class="balance-item">
+              <span class="balance-label">Disponible</span>
+              <span class="balance-value balance-ok" id="bal-available">$0.00</span>
+            </div>
+            <div class="balance-item">
+              <span class="balance-label">Límite</span>
+              <span class="balance-value" id="bal-limit">$0.00</span>
+            </div>
+          </div>
+          <div class="progress"><div class="progress-fill" id="bal-progress"></div></div>
+        </section>
+
+        <!-- Estado de cuenta del período -->
+        <section class="card">
+          <div class="period-nav">
+            <button class="btn btn-ghost" id="period-prev" aria-label="Período anterior">‹</button>
+            <div class="period-title">
+              <h2>Estado de cuenta</h2>
+              <span id="period-label">—</span>
+            </div>
+            <button class="btn btn-ghost" id="period-next" aria-label="Período siguiente">›</button>
+          </div>
+
+          <div class="stmt-dates">
+            <div><span class="muted">Corte:</span> <strong id="stmt-corte">—</strong></div>
+            <div><span class="muted">Pago límite:</span> <strong id="stmt-pago">—</strong> <span class="muted" id="stmt-pago-count"></span></div>
+          </div>
+
+          <div class="stmt-total-row">
+            <span>Total del período</span>
+            <strong id="stmt-total">$0.00</strong>
+          </div>
+
+          <ul class="stmt-list" id="stmt-list"></ul>
+
+          <button class="btn btn-ghost btn-block" id="mark-paid-btn">Marcar como pagado</button>
+        </section>
+
+        <!-- Por categoría -->
+        <section class="card">
+          <h2>Gastos por categoría</h2>
+          <ul class="category-list" id="category-totals"></ul>
+        </section>
+      </div>
     </section>
 
-    <!-- Resumen / próximas fechas -->
-    <section class="card summary" id="summary" hidden>
-      <h2 id="summary-title">Próximas fechas</h2>
-      <div class="summary-grid">
-        <div class="summary-item summary-corte">
-          <span class="summary-label">Próximo corte</span>
-          <span class="summary-date" id="next-corte">—</span>
-          <span class="summary-count" id="next-corte-count"></span>
-        </div>
-        <div class="summary-item summary-pago">
-          <span class="summary-label">Próximo pago</span>
-          <span class="summary-date" id="next-pago">—</span>
-          <span class="summary-count" id="next-pago-count"></span>
-        </div>
+    <!-- ============ MOVIMIENTOS ============ -->
+    <section class="tab-panel" id="tab-movimientos">
+      <div id="mov-empty" class="empty-state" hidden>
+        <p>Crea una tarjeta primero para registrar movimientos.</p>
+      </div>
+
+      <div id="mov-content">
+        <section class="card">
+          <h2>Nuevo movimiento</h2>
+          <form id="mov-form" class="mov-form">
+            <div class="field">
+              <label for="mov-date">Fecha</label>
+              <input type="date" id="mov-date" required />
+            </div>
+            <div class="field field-wide">
+              <label for="mov-desc">Descripción</label>
+              <input type="text" id="mov-desc" placeholder="Ej. Supermercado" maxlength="60" required />
+            </div>
+            <div class="field">
+              <label for="mov-amount">Monto</label>
+              <input type="number" id="mov-amount" min="0.01" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="field">
+              <label for="mov-installments">Cuotas / MSI</label>
+              <input type="number" id="mov-installments" min="1" max="60" value="1" required />
+            </div>
+            <div class="field field-wide">
+              <label for="mov-category">Categoría</label>
+              <select id="mov-category"></select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Agregar movimiento</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="list-header">
+            <h2>Movimientos</h2>
+            <select id="mov-filter" class="select-sm" aria-label="Filtrar movimientos"></select>
+          </div>
+          <ul class="mov-list" id="mov-list"></ul>
+        </section>
       </div>
     </section>
 
-    <!-- Calendario -->
-    <section class="card calendar-card">
-      <div class="calendar-nav">
-        <button type="button" class="btn btn-ghost" id="prev-month" aria-label="Mes anterior">‹</button>
-        <h2 id="month-label">—</h2>
-        <button type="button" class="btn btn-ghost" id="next-month" aria-label="Mes siguiente">›</button>
-      </div>
-      <div class="weekdays">
-        <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span>
-        <span>Vie</span><span>Sáb</span><span>Dom</span>
-      </div>
-      <div class="calendar-grid" id="calendar-grid"></div>
-      <div class="legend">
-        <span class="legend-item"><span class="dot dot-corte"></span> Corte</span>
-        <span class="legend-item"><span class="dot dot-pago"></span> Pago</span>
-        <span class="legend-item"><span class="dot dot-today"></span> Hoy</span>
-      </div>
+    <!-- ============ CALENDARIO ============ -->
+    <section class="tab-panel" id="tab-calendario">
+      <section class="card calendar-card">
+        <div class="calendar-nav">
+          <button class="btn btn-ghost" id="prev-month" aria-label="Mes anterior">‹</button>
+          <h2 id="month-label">—</h2>
+          <button class="btn btn-ghost" id="next-month" aria-label="Mes siguiente">›</button>
+        </div>
+        <div class="weekdays">
+          <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span>
+          <span>Vie</span><span>Sáb</span><span>Dom</span>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="legend">
+          <span class="legend-item"><span class="dot dot-corte"></span> Corte</span>
+          <span class="legend-item"><span class="dot dot-pago"></span> Pago</span>
+          <span class="legend-item"><span class="dot dot-mov"></span> Movimiento</span>
+          <span class="legend-item"><span class="dot dot-today"></span> Hoy</span>
+        </div>
+        <button class="btn btn-ghost btn-block" id="today-btn">Ir a hoy</button>
+      </section>
     </section>
+
+    <!-- ============ TARJETAS ============ -->
+    <section class="tab-panel" id="tab-tarjetas">
+      <section class="card">
+        <h2 id="card-form-title">Nueva tarjeta</h2>
+        <form id="card-form" class="card-form">
+          <input type="hidden" id="card-id" />
+          <div class="field field-wide">
+            <label for="card-name">Nombre</label>
+            <input type="text" id="card-name" placeholder="Ej. Visa Banco X" maxlength="40" required />
+          </div>
+          <div class="field">
+            <label for="corte-day">Día de corte</label>
+            <input type="number" id="corte-day" min="1" max="31" placeholder="15" required />
+          </div>
+          <div class="field">
+            <label for="pago-day">Día de pago</label>
+            <input type="number" id="pago-day" min="1" max="31" placeholder="5" required />
+          </div>
+          <div class="field">
+            <label for="card-limit">Límite de crédito</label>
+            <input type="number" id="card-limit" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="field">
+            <label for="card-color">Color</label>
+            <input type="color" id="card-color" value="#6366f1" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="card-save-btn">Guardar tarjeta</button>
+            <button type="button" class="btn btn-ghost" id="card-cancel-btn" hidden>Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Mis tarjetas</h2>
+        <ul class="cards-list" id="cards-list"></ul>
+      </section>
+    </section>
+
   </main>
-
-  <footer class="app-footer">
-    <button type="button" class="btn btn-ghost" id="today-btn">Ir a hoy</button>
-  </footer>
 
   <script src="app.js"></script>
 </body>
