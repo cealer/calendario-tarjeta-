@@ -1,0 +1,179 @@
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #273449;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --corte: #f59e0b;
+  --pago: #ef4444;
+  --today: #22c55e;
+  --border: #334155;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem;
+}
+.app-header h1 { font-size: 1.6rem; }
+.subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.card h2 { font-size: 1.05rem; margin-bottom: 0.85rem; }
+
+/* Formulario */
+.config-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  align-items: end;
+}
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+.field:first-child { grid-column: 1 / -1; }
+label { font-size: 0.8rem; color: var(--text-muted); }
+input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+}
+input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+.btn-primary { background: var(--primary); color: #fff; grid-column: 1 / -1; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface-2); }
+
+/* Resumen */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border-left: 4px solid var(--border);
+}
+.summary-corte { border-left-color: var(--corte); }
+.summary-pago { border-left-color: var(--pago); }
+.summary-label { font-size: 0.78rem; color: var(--text-muted); }
+.summary-date { font-size: 1.1rem; font-weight: 700; }
+.summary-count { font-size: 0.82rem; color: var(--text-muted); }
+
+/* Calendario */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.calendar-nav h2 { text-transform: capitalize; }
+.weekdays, .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.weekdays {
+  margin-bottom: 4px;
+}
+.weekdays span {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 0.2rem 0;
+}
+.day {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 0.95rem;
+  position: relative;
+}
+.day.empty { background: transparent; }
+.day.today { outline: 2px solid var(--today); font-weight: 700; }
+.day.corte { background: rgba(245, 158, 11, 0.18); }
+.day.pago { background: rgba(239, 68, 68, 0.18); }
+.day .tag {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-top: 1px;
+}
+.day.corte .tag { color: var(--corte); }
+.day.pago .tag { color: var(--pago); }
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.legend-item { display: flex; align-items: center; gap: 0.35rem; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot-corte { background: var(--corte); }
+.dot-pago { background: var(--pago); }
+.dot-today { background: var(--today); }
+
+.app-footer { text-align: center; padding: 1rem; }
+
+@media (max-width: 480px) {
+  .day { font-size: 0.85rem; }
+  .summary-grid { grid-template-columns: 1fr; }
+}

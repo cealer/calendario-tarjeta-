@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendario de Tarjeta</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>💳 Calendario de Tarjeta</h1>
+    <p class="subtitle">Controla tus fechas de corte y pago</p>
+  </header>
+
+  <main class="container">
+    <!-- Configuración de la tarjeta -->
+    <section class="card config" aria-label="Configuración de la tarjeta">
+      <h2>Configuración</h2>
+      <form id="config-form" class="config-form">
+        <div class="field">
+          <label for="card-name">Nombre de la tarjeta</label>
+          <input type="text" id="card-name" placeholder="Ej. Visa Banco X" maxlength="40" />
+        </div>
+        <div class="field">
+          <label for="corte-day">Día de corte</label>
+          <input type="number" id="corte-day" min="1" max="31" placeholder="Ej. 15" required />
+        </div>
+        <div class="field">
+          <label for="pago-day">Día límite de pago</label>
+          <input type="number" id="pago-day" min="1" max="31" placeholder="Ej. 5" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </form>
+    </section>
+
+    <!-- Resumen / próximas fechas -->
+    <section class="card summary" id="summary" hidden>
+      <h2 id="summary-title">Próximas fechas</h2>
+      <div class="summary-grid">
+        <div class="summary-item summary-corte">
+          <span class="summary-label">Próximo corte</span>
+          <span class="summary-date" id="next-corte">—</span>
+          <span class="summary-count" id="next-corte-count"></span>
+        </div>
+        <div class="summary-item summary-pago">
+          <span class="summary-label">Próximo pago</span>
+          <span class="summary-date" id="next-pago">—</span>
+          <span class="summary-count" id="next-pago-count"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Calendario -->
+    <section class="card calendar-card">
+      <div class="calendar-nav">
+        <button type="button" class="btn btn-ghost" id="prev-month" aria-label="Mes anterior">‹</button>
+        <h2 id="month-label">—</h2>
+        <button type="button" class="btn btn-ghost" id="next-month" aria-label="Mes siguiente">›</button>
+      </div>
+      <div class="weekdays">
+        <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span>
+        <span>Vie</span><span>Sáb</span><span>Dom</span>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+      <div class="legend">
+        <span class="legend-item"><span class="dot dot-corte"></span> Corte</span>
+        <span class="legend-item"><span class="dot dot-pago"></span> Pago</span>
+        <span class="legend-item"><span class="dot dot-today"></span> Hoy</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <button type="button" class="btn btn-ghost" id="today-btn">Ir a hoy</button>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
